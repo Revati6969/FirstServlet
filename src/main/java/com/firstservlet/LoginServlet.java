@@ -14,25 +14,26 @@ import java.io.PrintWriter;
         description = "Login servlet testing",
         urlPatterns = {"/loginServlet"},
         initParams = {
-                @WebInitParam(name = "user", value = "Revati"),
+                @WebInitParam(name = "user", value = "Rev"),
                 @WebInitParam(name = "password", value = "Revati@19")
         }
 )
 
 public class LoginServlet extends HttpServlet {
+    Validator validator = new Validator();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String user = request.getParameter("user");
         String pwd = request.getParameter("pwd");
-        String userID = getServletConfig().getInitParameter("user");
-        String password = getServletConfig().getInitParameter("password");
-        if (userID.equals(user) && password.equals(pwd)) {
+        String password = getServletConfig().getInitParameter("pwd");
+        if(validator.userNameValidation(user) && validator.passwordValidation(pwd)) {
             request.setAttribute("user", user);
+            request.setAttribute("password", password);
             request.getRequestDispatcher("LoginSuccess.jsp").forward(request, response);
         } else {
             RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/login.html");
             PrintWriter out = response.getWriter();
-            out.println("<font color=red>Either username or password is wrong........</font>");
+            out.println("<font color=red>Invalid username or password </font>");
             requestDispatcher.include(request, response);
         }
     }
